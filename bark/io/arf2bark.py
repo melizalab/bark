@@ -44,10 +44,16 @@ def arf2bark(arf_file, root_path, timezone, verbose):
                 entry_path = os.path.join(root_path, ename)
                 entry_attrs = copy_attrs(entry.attrs)
                 timestamp = entry_attrs.pop('timestamp')
+                # rename 'name' attribute created by openephys arf module
+                try:
+                    entry_attrs['openephys_name'] = entry_attrs.pop('name')
+                except KeyError:
+                    pass
                 if timezone:
                     timestamp = bark.convert_timestamp(timestamp, timezone)
                 else:
                     timestamp = bark.convert_timestamp(timestamp)
+
                 bark_entry = bark.create_entry(entry_path,
                                                timestamp,
                                                parents=False,
@@ -120,4 +126,3 @@ def _main():
 
 if __name__ == '__main__':
     _main()
-
